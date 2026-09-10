@@ -6,7 +6,7 @@ A modern, responsive personal portfolio website for **Tapas Halder**, showcasing
 
 Add your deployed website URL here:
 
-`https://tapas-halder.github.io/tapas-halder-portfolio/`
+`tapas-halder-portfolio.vercel.app`
 
 ## 👨‍💻 About
 
