@@ -6,7 +6,7 @@ A modern, responsive personal portfolio website for **Tapas Halder**, showcasing
 
 Add your deployed website URL here:
 
-`https://your-portfolio-url.com`
+`https://tapas-halder.github.io/tapas-halder-portfolio/`
 
 ## 👨‍💻 About
 
@@ -153,8 +153,8 @@ The website is optimized for:
 
 **Tapas Halder**
 
-* GitHub: https://github.com/tapashalder
-* LinkedIn: https://linkedin.com/in/tapashalder
+* GitHub: https://www.github.com/in/Tapas-Halder
+* LinkedIn: https://www.linkedin.com/in/tapas-halder-krish?utm_source=share_via&utm_content=profile&utm_medium=member_android
 
 ## 📄 License
 
