@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<title>Tapas Halder | Backend Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg-primary:#050505;
+  --bg-secondary:#0a0a0a;
+  --bg-card:#111111;
+  --bg-card-hover:#161616;
+  --accent:#00e676;
+  --accent-dark:#00c853;
+  --accent-glow:rgba(0,230,118,.25);
+  --text-primary:#f0f0f0;
+  --text-secondary:#888;
+  --border-color:#1e1e1e;
+  --border-light:#2a2a2a;
+  --radius:16px;
+  --radius-sm:12px;
+  --transition:.3s cubic-bezier(.4,0,.2,1);
+  --nav-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{
+  font-family:'Inter','Noto Sans JP',sans-serif;
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+  padding-top:env(safe-area-inset-top);
+}
+html[lang="ja"] body{font-family:'Noto Sans JP','Inter',sans-serif;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg-primary);}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+a{text-decoration:none;color:inherit;}
+img{max-width:100%;display:block;}
+button{font-family:inherit;}
+
+/* ---------- Utility ---------- */
+.container{width:100%;max-width:1200px;margin:0 auto;padding:0 clamp(16px,4vw,24px);}
+.section{padding:clamp(60px,9vw,100px) 0;}
+.section-header{text-align:center;margin-bottom:clamp(40px,6vw,64px);}
+.section-header h2{
+  font-size:clamp(1.55rem,4vw,2.4rem);
+  font-weight:700;letter-spacing:-1px;line-height:1.25;
+}
+.section-header h2 span{color:var(--accent);}
+.section-header p{color:var(--text-secondary);font-size:clamp(13px,1.6vw,15px);margin-top:8px;}
+.section-header .line{width:48px;height:3px;background:var(--accent);margin:18px auto 0;border-radius:3px;}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.active{opacity:1;transform:translateY(0);}
+
+/* ---------- Navbar ---------- */
+.navbar{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding:16px clamp(16px,4vw,40px);
+  background:rgba(5,5,5,.6);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,.04);
+  transition:var(--transition);
+}
+.navbar.scrolled{
+  padding:11px clamp(16px,4vw,40px);
+  background:rgba(5,5,5,.94);
+  box-shadow:0 4px 30px rgba(0,0,0,.4);
+}
+.logo{font-size:clamp(17px,2.2vw,20px);font-weight:700;letter-spacing:-.5px;white-space:nowrap;}
+.logo span{color:var(--accent);}
+.nav-links{display:flex;list-style:none;gap:clamp(14px,2vw,28px);}
+.nav-links a{
+  font-size:13px;font-weight:500;color:var(--text-secondary);
+  letter-spacing:.3px;transition:var(--transition);position:relative;white-space:nowrap;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-6px;left:0;width:0;height:2px;
+  background:var(--accent);border-radius:2px;transition:var(--transition);
+}
+.nav-links a:hover{color:var(--accent);}
+.nav-links a:hover::after{width:100%;}
+
+.nav-actions{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+
+/* ---------- Language Toggle ---------- */
+.lang-toggle{
+  position:relative;width:78px;height:34px;border-radius:30px;
+  background:#151515;border:1px solid var(--border-light);
+  cursor:pointer;flex-shrink:0;user-select:none;
+  transition:var(--transition);padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.lang-toggle:hover{border-color:rgba(0,230,118,.45);}
+.lang-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+.lang-toggle .lang-label{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:39px;text-align:center;font-size:10.5px;font-weight:700;
+  letter-spacing:.6px;z-index:2;pointer-events:none;
+  transition:color .3s ease;color:var(--text-secondary);
+}
+.lang-toggle .lang-label.en{left:0;}
+.lang-toggle .lang-label.ja{right:0;}
+.lang-toggle .knob{
+  position:absolute;top:3px;left:3px;width:36px;height:26px;
+  border-radius:30px;background:var(--accent);z-index:1;
+  transition:left .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease;
+  box-shadow:0 0 12px rgba(0,230,118,.35);
+}
+.lang-toggle.on .knob{left:calc(100% - 39px);}
+.lang-toggle .lang-label.en{color:#050505;}
+.lang-toggle.on .lang-label.en{color:var(--text-secondary);}
+.lang-toggle.on .lang-label.ja{color:#050505;}
+.lang-toggle.on{box-shadow:0 0 20px rgba(0,230,118,.18);}
+
+.hamburger{
+  display:none;background:none;border:1px solid var(--border-light);
+  width:40px;height:38px;border-radius:10px;font-size:17px;
+  color:var(--text-primary);cursor:pointer;transition:var(--transition);
+  align-items:center;justify-content:center;
+}
+.hamburger:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ---------- Hero ---------- */
+.hero{
+  min-height:100svh;display:flex;align-items:center;position:relative;
+  background:
+    radial-gradient(ellipse at 20% 40%,rgba(0,230,118,.07) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 60%,rgba(0,230,118,.04) 0%,transparent 40%),
+    var(--bg-primary);
+  padding:calc(var(--nav-h) + 40px) 0 60px;
+}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,60px);align-items:center;}
+.hero-text .badge{
+  display:inline-block;background:rgba(0,230,118,.08);
+  border:1px solid rgba(0,230,118,.2);border-radius:30px;
+  padding:6px 16px;font-size:clamp(10px,1.3vw,12px);color:var(--accent);
+  letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-bottom:22px;
+}
+.hero-text h1{
+  font-size:clamp(1.85rem,5.2vw,3.5rem);font-weight:800;
+  line-height:1.12;letter-spacing:-1.5px;margin-bottom:10px;
+}
+.hero-text h1 .highlight{color:var(--accent);}
+.hero-text h2{
+  font-size:clamp(.95rem,2.2vw,1.35rem);font-weight:500;
+  color:var(--text-secondary);margin-bottom:18px;letter-spacing:-.3px;
+}
+.hero-text p{
+  font-size:clamp(13.5px,1.7vw,15px);color:var(--text-secondary);
+  max-width:480px;margin-bottom:30px;line-height:1.8;
+}
+.hero-buttons{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-primary{
+  background:var(--accent);color:#050505;border:none;
+  padding:14px 30px;border-radius:50px;font-size:14px;font-weight:600;
+  cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  transition:var(--transition);box-shadow:0 4px 24px rgba(0,230,118,.25);
+  white-space:nowrap;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,230,118,.35);}
+.btn-outline{
+  background:transparent;color:var(--text-primary);
+  border:1px solid rgba(255,255,255,.15);padding:14px 30px;border-radius:50px;
+  font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;
+  align-items:center;gap:8px;transition:var(--transition);white-space:nowrap;
+}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.hero-photo{display:flex;justify-content:center;align-items:center;}
+.profile-circle{
+  width:clamp(180px,26vw,330px);aspect-ratio:1;border-radius:50%;
+  background:linear-gradient(145deg,#0d0d0d,#1a1a1a);
+  border:3px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(44px,7vw,78px);font-weight:800;color:var(--accent);
+  box-shadow:0 0 60px rgba(0,230,118,.15),inset 0 0 60px rgba(0,230,118,.05);
+  position:relative;transition:var(--transition);letter-spacing:-3px;
+}
+.profile-circle::after{
+  content:'';position:absolute;inset:-12px;border-radius:50%;
+  border:2px dashed rgba(0,230,118,.2);animation:spin 22s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.profile-circle:hover{
+  box-shadow:0 0 80px rgba(0,230,118,.25),inset 0 0 60px rgba(0,230,118,.08);
+  transform:scale(1.02);
+}
+
+/* ---------- About ---------- */
+.about{background:var(--bg-secondary);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,60px);align-items:center;}
+.about-text h3{
+  font-size:clamp(1.15rem,2.6vw,1.75rem);font-weight:700;
+  letter-spacing:-.5px;margin-bottom:16px;line-height:1.35;
+}
+.about-text p{color:var(--text-secondary);font-size:clamp(13px,1.7vw,14px);line-height:1.85;margin-bottom:16px;}
+.about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.5vw,16px);margin-top:28px;}
+.stat-item{
+  text-align:center;padding:clamp(12px,2vw,20px) 6px;background:var(--bg-card);
+  border-radius:var(--radius-sm);border:1px solid var(--border-color);transition:var(--transition);
+}
+.stat-item:hover{border-color:rgba(0,230,118,.3);transform:translateY(-4px);}
+.stat-number{font-size:clamp(1.15rem,3vw,1.85rem);font-weight:800;color:var(--accent);letter-spacing:-1px;}
+.stat-label{font-size:clamp(8.5px,1.2vw,11px);color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-top:4px;font-weight:500;}
+
+.about-image{
+  background:var(--bg-card);border-radius:var(--radius);
+  border:1px solid var(--border-color);padding:clamp(18px,3vw,30px);
+  display:flex;flex-direction:column;gap:12px;transition:var(--transition);overflow-x:auto;
+}
+.about-image:hover{border-color:rgba(0,230,118,.2);}
+.code-line{
+  display:flex;align-items:center;gap:8px;font-size:clamp(11px,1.5vw,13px);
+  font-family:'Courier New',monospace;color:#aaa;white-space:nowrap;
+}
+.code-line .key{color:var(--accent);}
+.code-line .string{color:#4caf50;}
+.code-line .num{color:#ffd700;}
+
+/* ---------- Goals ---------- */
+.goals-wrapper{max-width:900px;margin:clamp(48px,7vw,72px) auto 0;}
+.goals-title{
+  font-size:clamp(1.1rem,2.4vw,1.4rem);font-weight:700;text-align:center;
+  margin-bottom:28px;letter-spacing:-.3px;
+}
+.goals-title::after{
+  content:'';display:block;width:36px;height:3px;background:var(--accent);
+  margin:12px auto 0;border-radius:3px;
+}
+.goals-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:20px;}
+.goal-card{
+  background:var(--bg-card);border-radius:var(--radius);
+  border:1px solid var(--border-color);padding:clamp(22px,3.5vw,30px);
+  position:relative;overflow:hidden;transition:var(--transition);
+}
+.goal-card::before{
+  content:'';position:absolute;top:0;left:0;width:4px;height:100%;
+  background:var(--accent);border-radius:0 4px 4px 0;
+}
+.goal-card.future::before{background:linear-gradient(180deg,var(--accent),#00bcd4);}
+.goal-card:hover{border-color:rgba(0,230,118,.35);transform:translateY(-4px);background:var(--bg-card-hover);}
+.goal-icon{
+  width:44px;height:44px;border-radius:12px;background:rgba(0,230,118,.08);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);font-size:18px;margin-bottom:16px;
+}
+.goal-badge{
+  display:inline-block;font-size:10px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--accent);background:rgba(0,230,118,.08);
+  padding:4px 12px;border-radius:20px;margin-bottom:10px;
+}
+.goal-card h4{font-size:clamp(1rem,2.2vw,1.15rem);font-weight:700;margin-bottom:8px;}
+.goal-card p{font-size:clamp(12.5px,1.6vw,13.5px);color:var(--text-secondary);line-height:1.75;}
+
+/* ---------- Skills ---------- */
+.skills{background:var(--bg-primary);}
+.skills-category{margin-bottom:clamp(28px,4vw,40px);}
+.skills-category:last-child{margin-bottom:0;}
+.skills-category h3{
+  font-size:clamp(14px,1.9vw,17px);font-weight:600;margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.skills-category h3 i{color:var(--accent);font-size:15px;width:22px;text-align:center;flex-shrink:0;}
+.skill-tags{display:flex;flex-wrap:wrap;gap:8px;}
+.skill-tag{
+  background:var(--bg-card);border:1px solid var(--border-color);border-radius:30px;
+  padding:8px 16px;font-size:clamp(11.5px,1.5vw,13px);font-weight:500;
+  color:var(--text-secondary);display:inline-flex;align-items:center;gap:7px;
+  transition:var(--transition);cursor:default;
+}
+.skill-tag i{font-size:14px;color:var(--accent);}
+.skill-tag:hover{
+  border-color:var(--accent);color:var(--text-primary);
+  background:rgba(0,230,118,.06);transform:translateY(-2px);
+  box-shadow:0 4px 16px rgba(0,0,0,.3);
+}
+
+/* ---------- Projects ---------- */
+.projects{background:var(--bg-secondary);}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:clamp(18px,2.5vw,28px);}
+.project-card{
+  background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border-color);
+  overflow:hidden;transition:var(--transition);display:block;
+}
+.project-card:hover{
+  border-color:rgba(0,230,118,.3);transform:translateY(-6px);
+  box-shadow:0 12px 40px rgba(0,0,0,.4);background:var(--bg-card-hover);
+}
+.project-image{
+  height:clamp(140px,18vw,180px);background:linear-gradient(135deg,#0d0d0d,#151515);
+  display:flex;align-items:center;justify-content:center;position:relative;
+  overflow:hidden;border-bottom:1px solid var(--border-color);
+}
+.project-image::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%,rgba(0,230,118,.1),transparent 70%);
+}
+.project-image i{font-size:clamp(32px,5vw,42px);color:var(--accent);position:relative;z-index:1;transition:var(--transition);}
+.project-card:hover .project-image i{transform:scale(1.1);}
+.project-info{padding:clamp(18px,2.5vw,22px);}
+.project-info h3{
+  font-size:clamp(14.5px,1.9vw,17px);font-weight:600;margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.project-info h3 i{font-size:12px;color:var(--text-secondary);transition:var(--transition);}
+.project-card:hover .project-info h3 i{color:var(--accent);transform:translateX(4px);}
+.project-info p{font-size:clamp(12.5px,1.6vw,13px);color:var(--text-secondary);margin-bottom:14px;line-height:1.65;}
+.project-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.project-tag{background:rgba(0,230,118,.07);color:var(--accent);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+
+/* ---------- Certificates ---------- */
+.certificates{background:var(--bg-primary);}
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:clamp(18px,2.5vw,30px);}
+.cert-card{
+  background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border-color);
+  overflow:hidden;transition:var(--transition);
+}
+.cert-card:hover{border-color:rgba(0,230,118,.3);transform:translateY(-4px);}
+.cert-image{
+  height:clamp(170px,22vw,220px);background:linear-gradient(135deg,#0d0d0d,#151515);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  border-bottom:1px solid var(--border-color);position:relative;overflow:hidden;
+}
+.cert-image::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%,rgba(0,230,118,.08),transparent 70%);
+}
+.cert-image i{font-size:clamp(38px,6vw,48px);color:var(--accent);position:relative;z-index:1;}
+.cert-image span{
+  font-size:clamp(11px,1.5vw,13px);color:var(--text-secondary);
+  letter-spacing:1px;text-transform:uppercase;font-weight:500;position:relative;z-index:1;
+}
+.cert-info{padding:clamp(18px,2.5vw,22px);}
+.cert-info h3{font-size:clamp(14px,1.9vw,16px);font-weight:600;margin-bottom:6px;}
+.cert-info p{font-size:clamp(12.5px,1.6vw,13px);color:var(--text-secondary);line-height:1.7;}
+
+/* ---------- Education ---------- */
+.education{background:var(--bg-secondary);}
+.edu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:clamp(18px,2.5vw,30px);}
+.edu-card{
+  background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border-color);
+  padding:clamp(22px,3.5vw,30px);transition:var(--transition);position:relative;overflow:hidden;
+}
+.edu-card::before{
+  content:'';position:absolute;top:0;left:0;width:4px;height:100%;
+  background:var(--accent);border-radius:0 4px 4px 0;
+}
+.edu-card:hover{border-color:rgba(0,230,118,.3);transform:translateX(6px);}
+.edu-icon{
+  width:46px;height:46px;border-radius:12px;background:rgba(0,230,118,.08);
+  display:flex;align-items:center;justify-content:center;color:var(--accent);
+  font-size:19px;margin-bottom:16px;
+}
+.edu-card h3{font-size:clamp(15px,2vw,18px);font-weight:600;margin-bottom:4px;}
+.edu-card .institution{font-size:clamp(12.5px,1.6vw,14px);color:var(--accent);font-weight:500;margin-bottom:6px;}
+.edu-card .year{font-size:clamp(12px,1.5vw,13px);color:var(--text-secondary);}
+.edu-card .edu-desc{margin-top:10px;font-size:clamp(12px,1.55vw,13px);color:var(--text-secondary);line-height:1.7;}
+
+/* ---------- Hackathon ---------- */
+.hackathon{background:var(--bg-primary);}
+.hackathon-card{
+  background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border-color);
+  padding:clamp(24px,4vw,40px);display:flex;align-items:center;gap:clamp(20px,3vw,30px);
+  transition:var(--transition);max-width:900px;margin:0 auto;
+}
+.hackathon-card:hover{border-color:rgba(0,230,118,.3);box-shadow:0 8px 40px rgba(0,0,0,.3);}
+.hackathon-icon{
+  width:clamp(60px,8vw,80px);height:clamp(60px,8vw,80px);border-radius:50%;
+  background:rgba(0,230,118,.08);display:flex;align-items:center;justify-content:center;
+  font-size:clamp(24px,4vw,32px);color:var(--accent);flex-shrink:0;
+}
+.hackathon-info h3{font-size:clamp(15px,2.2vw,20px);font-weight:600;margin-bottom:6px;}
+.hackathon-info .event{font-size:clamp(12.5px,1.7vw,14px);color:var(--accent);font-weight:500;margin-bottom:6px;}
+.hackathon-info p{font-size:clamp(12.5px,1.6vw,13px);color:var(--text-secondary);line-height:1.7;}
+
+/* ---------- Contact ---------- */
+.contact{background:var(--bg-secondary);}
+.contact-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));
+  gap:clamp(14px,2vw,20px);max-width:940px;margin:0 auto;
+}
+.contact-card{
+  background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border-color);
+  padding:clamp(22px,3vw,28px) 16px;text-align:center;transition:var(--transition);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.contact-card:hover{border-color:rgba(0,230,118,.3);transform:translateY(-4px);background:var(--bg-card-hover);}
+.contact-card i{
+  width:clamp(46px,6vw,52px);height:clamp(46px,6vw,52px);border-radius:50%;
+  background:rgba(0,230,118,.08);display:flex;align-items:center;justify-content:center;
+  font-size:clamp(17px,2.4vw,20px);color:var(--accent);transition:var(--transition);
+}
+.contact-card:hover i{background:var(--accent);color:#050505;}
+.contact-card h4{font-size:clamp(13px,1.8vw,15px);font-weight:600;}
+.contact-card p{font-size:clamp(11px,1.5vw,12px);color:var(--text-secondary);word-break:break-word;}
+
+/* ---------- Footer ---------- */
+.footer{background:var(--bg-primary);padding:clamp(24px,4vw,30px) 0;border-top:1px solid var(--border-color);text-align:center;}
+.footer p{font-size:clamp(11.5px,1.5vw,13px);color:var(--text-secondary);}
+.footer .social-links{display:flex;justify-content:center;gap:12px;margin-top:14px;flex-wrap:wrap;}
+.footer .social-links a{
+  width:38px;height:38px;border-radius:50%;background:var(--bg-card);
+  border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;
+  color:var(--text-secondary);font-size:14px;transition:var(--transition);
+}
+.footer .social-links a:hover{background:var(--accent);color:#050505;border-color:var(--accent);}
+
+/* ---------- Responsive ---------- */
+@media(max-width:992px){
+  .nav-links{
+    display:none;position:absolute;top:100%;left:0;width:100%;
+    background:rgba(5,5,5,.98);backdrop-filter:blur(20px);
+    flex-direction:column;padding:20px clamp(16px,4vw,30px);gap:4px;
+    border-bottom:1px solid var(--border-color);
+    box-shadow:0 20px 40px rgba(0,0,0,.5);
+  }
+  .nav-links.active{display:flex;}
+  .nav-links a{display:block;padding:12px 0;font-size:15px;border-bottom:1px solid rgba(255,255,255,.04);}
+  .nav-links li:last-child a{border-bottom:none;}
+  .nav-links a::after{display:none;}
+  .hamburger{display:flex;}
+  .hero-grid{grid-template-columns:1fr;text-align:center;gap:36px;}
+  .hero-text p{margin-left:auto;margin-right:auto;}
+  .hero-buttons{justify-content:center;}
+  .about-grid{grid-template-columns:1fr;}
+  .about-image{order:2;}
+  .about-text{order:1;}
+}
+@media(max-width:640px){
+  .hero{padding-top:calc(var(--nav-h) + 28px);}
+  .btn-primary,.btn-outline{padding:12px 24px;font-size:13px;}
+  .hero-buttons{gap:10px;}
+  .hero-buttons .btn-primary,.hero-buttons .btn-outline{flex:1 1 auto;justify-content:center;}
+  .hackathon-card{flex-direction:column;text-align:center;}
+  .contact-grid{grid-template-columns:repeat(2,1fr);}
+  .about-stats{gap:8px;}
+}
+@media(max-width:420px){
+  .logo{font-size:16px;}
+  .lang-toggle{width:70px;height:32px;}
+  .lang-toggle .knob{width:32px;height:24px;}
+  .lang-toggle .lang-label{width:35px;font-size:10px;}
+  .lang-toggle.on .knob{left:calc(100% - 35px);}
+  .hamburger{width:38px;height:36px;font-size:16px;}
+  .contact-grid{grid-template-columns:1fr;}
+  .skill-tag{padding:7px 13px;font-size:11.5px;}
+  .project-tag{font-size:10px;}
+}
+@media(max-width:340px){
+  .logo span{display:none;}
+  .lang-toggle{width:64px;}
+  .lang-toggle .knob{width:29px;height:22px;}
+  .lang-toggle .lang-label{width:32px;font-size:9.5px;}
+  .lang-toggle.on .knob{left:calc(100% - 32px);}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;}
+  html{scroll-behavior:auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar" id="navbar">
+  <a href="#home" class="logo">Tapas<span>.</span>Halder</a>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about"        data-i18n="nav_about">About</a></li>
+    <li><a href="#skills"       data-i18n="nav_skills">Skills</a></li>
+    <li><a href="#projects"     data-i18n="nav_projects">Projects</a></li>
+    <li><a href="#certificates" data-i18n="nav_certificates">Certificates</a></li>
+    <li><a href="#education"    data-i18n="nav_education">Education</a></li>
+    <li><a href="#contact"      data-i18n="nav_contact">Contact</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <!-- Language toggle -->
+    <div class="lang-toggle" id="langToggle" role="switch" aria-checked="false"
+         aria-label="Toggle Japanese translation" tabindex="0" title="Translate to Japanese">
+      <span class="knob"></span>
+      <span class="lang-label en">EN</span>
+      <span class="lang-label ja">JA</span>
+    </div>
+    <!-- Hamburger -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="badge" data-i18n="hero_badge">✦ Backend Developer</div>
+        <h1>
+          <span data-i18n="hero_greeting">Hi, I'm</span>
+          <span class="highlight">Tapas Halder</span>
+        </h1>
+        <h2 data-i18n="hero_role">Backend Developer &amp; AI/ML Enthusiast</h2>
+        <p data-i18n="hero_desc">I build scalable backend systems and intelligent applications using Python, FastAPI, and modern ML frameworks. Passionate about clean architecture and data-driven solutions.</p>
+        <div class="hero-buttons">
+          <a href="#projects" class="btn-primary"><i class="fas fa-arrow-right"></i> <span data-i18n="hero_btn_projects">View Projects</span></a>
+          <a href="#contact" class="btn-outline"><i class="fas fa-envelope"></i> <span data-i18n="hero_btn_contact">Contact Me</span></a>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <div class="profile-circle">TH</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="about section" id="about">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 data-i18n-html="about_title">About <span>Me</span></h2>
+      <p data-i18n="about_sub">Get to know the developer behind the code</p>
+      <div class="line"></div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <h3 data-i18n="about_h3">Building robust backend systems &amp; AI solutions</h3>
+        <p data-i18n="about_p1">I'm a passionate Backend Developer with a strong foundation in Python and modern web frameworks. I specialize in designing RESTful APIs, managing databases, and deploying scalable applications using Docker and cloud services.</p>
+        <p data-i18n="about_p2">My interests extend into AI/ML, where I leverage libraries like PyTorch, TensorFlow, and scikit-learn to build intelligent systems. I'm constantly learning and exploring new technologies to solve real-world problems.</p>
+
+        <div class="about-stats">
+          <div class="stat-item">
+            <div class="stat-number">3+</div>
+            <div class="stat-label" data-i18n="stat_years">Years Coding</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">15+</div>
+            <div class="stat-label" data-i18n="stat_projects">Projects</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">5+</div>
+            <div class="stat-label" data-i18n="stat_hack">Hackathons</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-image reveal">
+        <div class="code-line"><span class="key">const</span> <span>developer</span> = {</div>
+        <div class="code-line" style="padding-left:18px;"><span class="key">name</span>: <span class="string">'Tapas Halder'</span>,</div>
+        <div class="code-line" style="padding-left:18px;"><span class="key">role</span>: <span class="string">'<span data-i18n="code_role">Backend Developer</span>'</span>,</div>
+        <div class="code-line" style="padding-left:18px;"><span class="key">skills</span>: [<span class="string">'Python'</span>, <span class="string">'FastAPI'</span>, <span class="string">'PostgreSQL'</span>],</div>
+        <div class="code-line" style="padding-left:18px;"><span class="key">passion</span>: <span class="string">'AI/ML'</span>,</div>
+        <div class="code-line" style="padding-left:18px;"><span class="key">hireable</span>: <span class="num">true</span></div>
+        <div class="code-line">};</div>
+      </div>
+    </div>
+
+    <!-- ===== GOALS ===== -->
+    <div class="goals-wrapper reveal">
+      <h3 class="goals-title" data-i18n="goals_title">My Goals</h3>
+      <div class="goals-grid">
+        <div class="goal-card">
+          <div class="goal-icon"><i class="fas fa-bullseye"></i></div>
+          <div class="goal-badge" data-i18n="goal_now_badge">Current Goal</div>
+          <h4 data-i18n="goal_now_title">Backend Developer</h4>
+          <p data-i18n="goal_now_desc">I'm currently focused on mastering backend development — building scalable APIs, designing efficient databases, and writing clean, maintainable server-side code with Python and FastAPI.</p>
+        </div>
+        <div class="goal-card future">
+          <div class="goal-icon"><i class="fas fa-rocket"></i></div>
+          <div class="goal-badge" data-i18n="goal_future_badge">Future Goal</div>
+          <h4 data-i18n="goal_future_title">AI/ML Engineer</h4>
+          <p data-i18n="goal_future_desc">My long-term goal is to become an AI/ML Engineer — building intelligent systems that solve real-world problems using deep learning, computer vision, and data-driven approaches.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SKILLS ================= -->
+<section class="skills section" id="skills">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 data-i18n-html="skills_title">My <span>Skills</span></h2>
+      <p data-i18n="skills_sub">Technologies and tools I work with</p>
+      <div class="line"></div>
+    </div>
+
+    <div class="skills-category reveal">
+      <h3><i class="fas fa-server"></i> <span data-i18n="skills_cat_backend">Backend &amp; Tools</span></h3>
+      <div class="skill-tags">
+        <span class="skill-tag"><i class="fab fa-python"></i> Python</span>
+        <span class="skill-tag"><i class="fas fa-bolt"></i> FastAPI</span>
+        <span class="skill-tag"><i class="fas fa-database"></i> PostgreSQL</span>
+        <span class="skill-tag"><i class="fab fa-git-alt"></i> Git</span>
+        <span class="skill-tag"><i class="fab fa-github"></i> GitHub</span>
+        <span class="skill-tag"><i class="fab fa-docker"></i> Docker</span>
+      </div>
+    </div>
+
+    <div class="skills-category reveal">
+      <h3><i class="fas fa-brain"></i> <span data-i18n="skills_cat_ml">Data Science &amp; AI/ML</span></h3>
+      <div class="skill-tags">
+        <span class="skill-tag"><i class="fas fa-calculator"></i> NumPy</span>
+        <span class="skill-tag"><i class="fas fa-table"></i> Pandas</span>
+        <span class="skill-tag"><i class="fas fa-chart-line"></i> Matplotlib</span>
+        <span class="skill-tag"><i class="fas fa-chart-bar"></i> Seaborn</span>
+        <span class="skill-tag"><i class="fas fa-robot"></i> scikit-learn</span>
+        <span class="skill-tag"><i class="fas fa-fire"></i> PyTorch</span>
+        <span class="skill-tag"><i class="fas fa-microchip"></i> TensorFlow</span>
+        <span class="skill-tag"><i class="fas fa-brain"></i> AI-ML</span>
+      </div>
+    </div>
+
+    <div class="skills-category reveal">
+      <h3><i class="fas fa-laptop-code"></i> <span data-i18n="skills_cat_front">Frontend &amp; Languages</span></h3>
+      <div class="skill-tags">
+        <span class="skill-tag"><i class="fab fa-html5"></i> HTML</span>
+        <span class="skill-tag"><i class="fab fa-css3-alt"></i> CSS</span>
+        <span class="skill-tag"><i class="fab fa-js"></i> JavaScript</span>
+        <span class="skill-tag"><i class="fas fa-code"></i> C</span>
+        <span class="skill-tag"><i class="fab fa-java"></i> Java</span>
+        <span class="skill-tag"><i class="fas fa-database"></i> Oracle SQL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROJECTS ================= -->
+<section class="projects section" id="projects">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 data-i18n-html="projects_title">Featured <span>Projects</span></h2>
+      <p data-i18n="projects_sub">Click on any project to view the source code on GitHub</p>
+      <div class="line"></div>
+    </div>
+
+    <div class="projects-grid">
+      <a href="https://github.com/tapashalder" target="_blank" rel="noopener" class="project-card reveal">
+        <div class="project-image"><i class="fas fa-shopping-cart"></i></div>
+        <div class="project-info">
+          <h3><span data-i18n="proj1_title">E-Commerce API</span> <i class="fas fa-external-link-alt"></i></h3>
+          <p data-i18n="proj1_desc">A scalable REST API for e-commerce with authentication, product management, and order processing.</p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">FastAPI</span>
+            <span class="project-tag">PostgreSQL</span>
+            <span class="project-tag">Docker</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://github.com/tapashalder" target="_blank" rel="noopener" class="project-card reveal">
+        <div class="project-image"><i class="fas fa-chart-pie"></i></div>
+        <div class="project-info">
+          <h3><span data-i18n="proj2_title">Sales Prediction ML</span> <i class="fas fa-external-link-alt"></i></h3>
+          <p data-i18n="proj2_desc">Machine learning model that predicts future sales using historical data and time-series analysis.</p>
+          <div class="project-tags">
+            <span class="project-tag">scikit-learn</span>
+            <span class="project-tag">Pandas</span>
+            <span class="project-tag">Matplotlib</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://github.com/tapashalder" target="_blank" rel="noopener" class="project-card reveal">
+        <div class="project-image"><i class="fas fa-robot"></i></div>
+        <div class="project-info">
+          <h3><span data-i18n="proj3_title">Image Classifier</span> <i class="fas fa-external-link-alt"></i></h3>
+          <p data-i18n="proj3_desc">Deep learning model using PyTorch to classify images across multiple categories with high accuracy.</p>
+          <div class="project-tags">
+            <span class="project-tag">PyTorch</span>
+            <span class="project-tag">NumPy</span>
+            <span class="project-tag">CNN</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://github.com/tapashalder" target="_blank" rel="noopener" class="project-card reveal">
+        <div class="project-image"><i class="fas fa-tasks"></i></div>
+        <div class="project-info">
+          <h3><span data-i18n="proj4_title">Task Manager API</span> <i class="fas fa-external-link-alt"></i></h3>
+          <p data-i18n="proj4_desc">A collaborative task management backend with real-time updates, user roles, and team workspaces.</p>
+          <div class="project-tags">
+            <span class="project-tag">FastAPI</span>
+            <span class="project-tag">PostgreSQL</span>
+            <span class="project-tag">JWT</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CERTIFICATES ================= -->
+<section class="certificates section" id="certificates">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 data-i18n-html="cert_title">My <span>Certificates</span></h2>
+      <p data-i18n="cert_sub">Professional certifications and internship achievements</p>
+      <div class="line"></div>
+    </div>
+
+    <div class="cert-grid">
+      <div class="cert-card reveal">
+        <div class="cert-image">
+          <i class="fas fa-certificate"></i>
+          <span data-i18n="cert1_badge">Internship Certificate</span>
+        </div>
+        <div class="cert-info">
+          <h3 data-i18n="cert1_title">Backend Development Internship</h3>
+          <p data-i18n="cert1_desc">Completed a 6-month internship focused on Python, FastAPI, and database design. Worked on real-world projects and contributed to production code.</p>
+        </div>
+      </div>
+
+      <div class="cert-card reveal">
+        <div class="cert-image">
+          <i class="fas fa-award"></i>
+          <span data-i18n="cert2_badge">Certification</span>
+        </div>
+        <div class="cert-info">
+          <h3 data-i18n="cert2_title">AI/ML Specialization</h3>
+          <p data-i18n="cert2_desc">Earned a professional certificate in Machine Learning and Artificial Intelligence covering deep learning, NLP, and model deployment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EDUCATION ================= -->
+<section class="education section" id="education">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 data-i18n-html="edu_title">My <span>Education</span></h2>
+      <p data-i18n="edu_sub">Academic background and qualifications</p>
+      <div class="line"></div>
+    </div>
+
+    <div class="edu-grid">
+      <div class="edu-card reveal">
+        <div class="edu-icon"><i class="fas fa-university"></i></div>
+        <h3 data-i18n="edu1_title">Bachelor of Technology</h3>
+        <div class="institution" data-i18n="edu1_inst">Computer Science &amp; Engineering</div>
+        <div class="year">2020 – 2024</div>
+        <p class="edu-desc" data-i18n="edu1_desc">Focused on algorithms, data structures, DBMS, and machine learning. Active member of the coding club.</p>
+      </div>
+
+      <div class="edu-card reveal">
+        <div class="edu-icon"><i class="fas fa-school"></i></div>
+        <h3 data-i18n="edu2_title">Higher Secondary</h3>
+        <div class="institution" data-i18n="edu2_inst">Science Stream</div>
+        <div class="year">2018 – 2020</div>
+        <p class="edu-desc" data-i18n="edu2_desc">Completed with distinction in Mathematics and Computer Science. Developed early interest in programming.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HACKATHON ================= -->
+<section class="hackathon section" id="hackathon">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 data-i18n-html="hack_title">Hackathon <span>Experience</span></h2>
+      <p data-i18n="hack_sub">Building innovative solutions under pressure</p>
+      <div class="line"></div>
+    </div>
+
+    <div class="hackathon-card reveal">
+      <div class="hackathon-icon"><i class="fas fa-trophy"></i></div>
+      <div class="hackathon-info">
+        <h3 data-i18n="hack_event_title">Smart India Hackathon 2024</h3>
+        <div class="event" data-i18n="hack_event_pos">National Level Finalist</div>
+        <p data-i18n="hack_event_desc">Led a team of 4 to build an AI-powered healthcare assistant using FastAPI and PyTorch. Our solution streamlined patient triage and reduced waiting times by 30%.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="contact section" id="contact">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 data-i18n-html="contact_title">Get In <span>Touch</span></h2>
+      <p data-i18n="contact_sub">Let's connect and build something amazing together</p>
+      <div class="line"></div>
+    </div>
+
+    <div class="contact-grid">
+      <a href="https://linkedin.com/in/tapashalder" target="_blank" rel="noopener" class="contact-card reveal">
+        <i class="fab fa-linkedin-in"></i>
+        <h4>LinkedIn</h4>
+        <p data-i18n="contact_li">Connect professionally</p>
+      </a>
+
+      <a href="https://github.com/tapashalder" target="_blank" rel="noopener" class="contact-card reveal">
+        <i class="fab fa-github"></i>
+        <h4>GitHub</h4>
+        <p data-i18n="contact_gh">View my repositories</p>
+      </a>
+
+      <a href="mailto:tapas.halder@example.com" class="contact-card reveal">
+        <i class="fas fa-envelope"></i>
+        <h4 data-i18n="contact_email">Email</h4>
+        <p>tapas.halder@example.com</p>
+      </a>
+
+      <a href="tel:+919876543210" class="contact-card reveal">
+        <i class="fas fa-phone-alt"></i>
+        <h4 data-i18n="contact_call">Call</h4>
+        <p>+91 98765 43210</p>
+      </a>
+
+      <a href="https://wa.me/919876543210" target="_blank" rel="noopener" class="contact-card reveal">
+        <i class="fab fa-whatsapp"></i>
+        <h4>WhatsApp</h4>
+        <p data-i18n="contact_wa">Chat with me</p>
+      </a>
+
+      <a href="#" class="contact-card reveal">
+        <i class="fas fa-file-alt"></i>
+        <h4 data-i18n="contact_resume">Resume</h4>
+        <p data-i18n="contact_resume_sub">Download CV</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="container">
+    <p data-i18n="footer_text">© 2026 Tapas Halder. All rights reserved.</p>
+    <div class="social-links">
+      <a href="https://github.com/tapashalder" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://linkedin.com/in/tapashalder" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+      <a href="https://twitter.com/tapashalder" target="_blank" rel="noopener" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+      <a href="mailto:tapas.halder@example.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   TRANSLATIONS
+   ============================================================ */
+const translations = {
+  en: {
+    nav_about:"About", nav_skills:"Skills", nav_projects:"Projects",
+    nav_certificates:"Certificates", nav_education:"Education", nav_contact:"Contact",
+
+    hero_badge:"✦ Backend Developer",
+    hero_greeting:"Hi, I'm",
+    hero_role:"Backend Developer & AI/ML Enthusiast",
+    hero_desc:"I build scalable backend systems and intelligent applications using Python, FastAPI, and modern ML frameworks. Passionate about clean architecture and data-driven solutions.",
+    hero_btn_projects:"View Projects",
+    hero_btn_contact:"Contact Me",
+
+    about_title:'About <span>Me</span>',
+    about_sub:"Get to know the developer behind the code",
+    about_h3:"Building robust backend systems & AI solutions",
+    about_p1:"I'm a passionate Backend Developer with a strong foundation in Python and modern web frameworks. I specialize in designing RESTful APIs, managing databases, and deploying scalable applications using Docker and cloud services.",
+    about_p2:"My interests extend into AI/ML, where I leverage libraries like PyTorch, TensorFlow, and scikit-learn to build intelligent systems. I'm constantly learning and exploring new technologies to solve real-world problems.",
+    code_role:"Backend Developer",
+    stat_years:"Years Coding", stat_projects:"Projects", stat_hack:"Hackathons",
+
+    goals_title:"My Goals",
+    goal_now_badge:"Current Goal",
+    goal_now_title:"Backend Developer",
+    goal_now_desc:"I'm currently focused on mastering backend development — building scalable APIs, designing efficient databases, and writing clean, maintainable server-side code with Python and FastAPI.",
+    goal_future_badge:"Future Goal",
+    goal_future_title:"AI/ML Engineer",
+    goal_future_desc:"My long-term goal is to become an AI/ML Engineer — building intelligent systems that solve real-world problems using deep learning, computer vision, and data-driven approaches.",
+
+    skills_title:'My <span>Skills</span>',
+    skills_sub:"Technologies and tools I work with",
+    skills_cat_backend:"Backend & Tools",
+    skills_cat_ml:"Data Science & AI/ML",
+    skills_cat_front:"Frontend & Languages",
+
+    projects_title:'Featured <span>Projects</span>',
+    projects_sub:"Click on any project to view the source code on GitHub",
+    proj1_title:"E-Commerce API",
+    proj1_desc:"A scalable REST API for e-commerce with authentication, product management, and order processing.",
+    proj2_title:"Sales Prediction ML",
+    proj2_desc:"Machine learning model that predicts future sales using historical data and time-series analysis.",
+    proj3_title:"Image Classifier",
+    proj3_desc:"Deep learning model using PyTorch to classify images across multiple categories with high accuracy.",
+    proj4_title:"Task Manager API",
+    proj4_desc:"A collaborative task management backend with real-time updates, user roles, and team workspaces.",
+
+    cert_title:'My <span>Certificates</span>',
+    cert_sub:"Professional certifications and internship achievements",
+    cert1_badge:"Internship Certificate",
+    cert1_title:"Backend Development Internship",
+    cert1_desc:"Completed a 6-month internship focused on Python, FastAPI, and database design. Worked on real-world projects and contributed to production code.",
+    cert2_badge:"Certification",
+    cert2_title:"AI/ML Specialization",
+    cert2_desc:"Earned a professional certificate in Machine Learning and Artificial Intelligence covering deep learning, NLP, and model deployment.",
+
+    edu_title:'My <span>Education</span>',
+    edu_sub:"Academic background and qualifications",
+    edu1_title:"Bachelor of Technology",
+    edu1_inst:"Computer Science & Engineering",
+    edu1_desc:"Focused on algorithms, data structures, DBMS, and machine learning. Active member of the coding club.",
+    edu2_title:"Higher Secondary",
+    edu2_inst:"Science Stream",
+    edu2_desc:"Completed with distinction in Mathematics and Computer Science. Developed early interest in programming.",
+
+    hack_title:'Hackathon <span>Experience</span>',
+    hack_sub:"Building innovative solutions under pressure",
+    hack_event_title:"Smart India Hackathon 2024",
+    hack_event_pos:"National Level Finalist",
+    hack_event_desc:"Led a team of 4 to build an AI-powered healthcare assistant using FastAPI and PyTorch. Our solution streamlined patient triage and reduced waiting times by 30%.",
+
+    contact_title:'Get In <span>Touch</span>',
+    contact_sub:"Let's connect and build something amazing together",
+    contact_li:"Connect professionally",
+    contact_gh:"View my repositories",
+    contact_email:"Email",
+    contact_call:"Call",
+    contact_wa:"Chat with me",
+    contact_resume:"Resume",
+    contact_resume_sub:"Download CV",
+
+    footer_text:"© 2026 Tapas Halder. All rights reserved."
+  },
+
+  ja: {
+    nav_about:"私について", nav_skills:"スキル", nav_projects:"プロジェクト",
+    nav_certificates:"資格", nav_education:"学歴", nav_contact:"お問い合わせ",
+
+    hero_badge:"✦ バックエンド開発者",
+    hero_greeting:"こんにちは、",
+    hero_role:"バックエンド開発者 & AI/ML エンジニア志望",
+    hero_desc:"Python、FastAPI、最新の機械学習フレームワークを用いて、スケーラブルなバックエンドシステムとインテリジェントなアプリケーションを構築しています。クリーンなアーキテクチャとデータ駆動型ソリューションに情熱を注いでいます。",
+    hero_btn_projects:"プロジェクトを見る",
+    hero_btn_contact:"お問い合わせ",
+
+    about_title:'<span>私</span>について',
+    about_sub:"コードの裏側にいる開発者をご紹介します",
+    about_h3:"堅牢なバックエンドシステムとAIソリューションの構築",
+    about_p1:"私はPythonと最新のWebフレームワークに強い基盤を持つ、情熱的なバックエンド開発者です。RESTful APIの設計、データベース管理、Dockerやクラウドサービスを活用したスケーラブルなアプリケーションのデプロイを専門としています。",
+    about_p2:"私の興味はAI/MLにも広がり、PyTorch、TensorFlow、scikit-learnなどのライブラリを活用してインテリジェントなシステムを構築しています。実社会の問題を解決するために、常に新しい技術を学び、探求し続けています。",
+    code_role:"バックエンド開発者",
+    stat_years:"コーディング年数", stat_projects:"プロジェクト", stat_hack:"ハッカソン",
+
+    goals_title:"私の目標",
+    goal_now_badge:"現在の目標",
+    goal_now_title:"バックエンド開発者",
+    goal_now_desc:"現在はバックエンド開発の習得に集中しています。PythonとFastAPIを使い、スケーラブルなAPIの構築、効率的なデータベース設計、保守性の高いサーバーサイドコードの作成に取り組んでいます。",
+    goal_future_badge:"将来の目標",
+    goal_future_title:"AI/ML エンジニア",
+    goal_future_desc:"長期的な目標はAI/MLエンジニアになることです。ディープラーニング、コンピュータビジョン、データ駆動型アプローチを用いて、実社会の問題を解決するインテリジェントなシステムを構築します。",
+
+    skills_title:'<span>私の</span>スキル',
+    skills_sub:"使用している技術とツール",
+    skills_cat_backend:"バックエンド & ツール",
+    skills_cat_ml:"データサイエンス & AI/ML",
+    skills_cat_front:"フロントエンド & 言語",
+
+    projects_title:'<span>注目の</span>プロジェクト',
+    projects_sub:"各プロジェクトをクリックすると、GitHubのソースコードが表示されます",
+    proj1_title:"EコマースAPI",
+    proj1_desc:"認証、商品管理、注文処理を備えた、スケーラブルなEコマース向けREST APIです。",
+    proj2_title:"売上予測ML",
+    proj2_desc:"過去のデータと時系列分析を用いて将来の売上を予測する機械学習モデルです。",
+    proj3_title:"画像分類器",
+    proj3_desc:"PyTorchを使用して、画像を複数のカテゴリに高精度で分類するディープラーニングモデルです。",
+    proj4_title:"タスク管理API",
+    proj4_desc:"リアルタイム更新、ユーザーロール、チームワークスペースを備えた共同タスク管理バックエンドです。",
+
+    cert_title:'<span>私の</span>資格',
+    cert_sub:"プロフェッショナル認定とインターンシップの実績",
+    cert1_badge:"インターンシップ証明書",
+    cert1_title:"バックエンド開発インターンシップ",
+    cert1_desc:"Python、FastAPI、データベース設計に焦点を当てた6ヶ月間のインターンシップを修了しました。実践的なプロジェクトに取り組み、本番コードに貢献しました。",
+    cert2_badge:"認定証",
+    cert2_title:"AI/ML 専門コース",
+    cert2_desc:"ディープラーニング、自然言語処理、モデルデプロイメントを網羅する、機械学習と人工知能のプロフェッショナル認定を取得しました。",
+
+    edu_title:'<span>私の</span>学歴',
+    edu_sub:"学歴と資格",
+    edu1_title:"工学士（B.Tech）",
+    edu1_inst:"コンピュータサイエンス & エンジニアリング",
+    edu1_desc:"アルゴリズム、データ構造、データベース管理システム、機械学習に注力しました。コーディングクラブの積極的なメンバーでした。",
+    edu2_title:"高等学校",
+    edu2_inst:"理数科",
+    edu2_desc:"数学とコンピュータサイエンスで優秀な成績を収めて卒業しました。プログラミングへの早い関心を育みました。",
+
+    hack_title:'<span>ハッカソン</span>の経験',
+    hack_sub:"プレッシャーの中で革新的なソリューションを構築",
+    hack_event_title:"スマート・インディア・ハッカソン 2024",
+    hack_event_pos:"全国大会ファイナリスト",
+    hack_event_desc:"4人のチームを率いて、FastAPIとPyTorchを使用したAI搭載のヘルスケアアシスタントを構築しました。私たちのソリューションは患者のトリアージを効率化し、待ち時間を30%削減しました。",
+
+    contact_title:'<span>お気軽に</span>ご連絡ください',
+    contact_sub:"つながって、一緒に素晴らしいものを作りましょう",
+    contact_li:"プロフェッショナルとしてつながる",
+    contact_gh:"リポジトリを見る",
+    contact_email:"メール",
+    contact_call:"電話",
+    contact_wa:"チャットする",
+    contact_resume:"履歴書",
+    contact_resume_sub:"CVをダウンロード",
+
+    footer_text:"© 2026 Tapas Halder. 無断転載を禁じます。"
+  }
+};
+
+/* ============================================================
+   LANGUAGE ENGINE
+   ============================================================ */
+const langToggle = document.getElementById('langToggle');
+let currentLang = 'en';
+
+function applyLanguage(lang){
+  currentLang = lang;
+  const dict = translations[lang];
+  if(!dict) return;
+
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(dict[key] !== undefined) el.textContent = dict[key];
+  });
+
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-html');
+    if(dict[key] !== undefined) el.innerHTML = dict[key];
+  });
+
+  document.documentElement.lang = (lang === 'ja') ? 'ja' : 'en';
+  document.title = (lang === 'ja')
+    ? 'Tapas Halder | バックエンド開発者'
+    : 'Tapas Halder | Backend Developer';
+
+  const isOn = (lang === 'ja');
+  langToggle.classList.toggle('on', isOn);
+  langToggle.setAttribute('aria-checked', String(isOn));
+  langToggle.setAttribute('title', isOn ? 'Switch to English' : '日本語に翻訳');
+
+  try { localStorage.setItem('th_lang', lang); } catch(e){}
+}
+
+function toggleLanguage(){
+  applyLanguage(currentLang === 'en' ? 'ja' : 'en');
+}
+
+langToggle.addEventListener('click', toggleLanguage);
+langToggle.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' || e.key === ' '){
+    e.preventDefault();
+    toggleLanguage();
+  }
+});
+
+/* Restore saved language */
+(function initLanguage(){
+  let saved = 'en';
+  try { saved = localStorage.getItem('th_lang') || 'en'; } catch(e){}
+  if(saved === 'ja') applyLanguage('ja');
+})();
+
+/* ============================================================
+   NAVBAR SCROLL
+   ============================================================ */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', ()=>{
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
+}, { passive:true });
+
+/* ============================================================
+   MOBILE MENU
+   ============================================================ */
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('navLinks');
+
+hamburger.addEventListener('click', (e)=>{
+  e.stopPropagation();
+  navLinks.classList.toggle('active');
+  const open = navLinks.classList.contains('active');
+  hamburger.innerHTML = open ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+});
+
+navLinks.querySelectorAll('a').forEach(link=>{
+  link.addEventListener('click', ()=>{
+    navLinks.classList.remove('active');
+    hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+  });
+});
+
+document.addEventListener('click', (e)=>{
+  if(navLinks.classList.contains('active') &&
+     !navLinks.contains(e.target) &&
+     !hamburger.contains(e.target)){
+    navLinks.classList.remove('active');
+    hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+  }
+});
+
+window.addEventListener('resize', ()=>{
+  if(window.innerWidth > 992){
+    navLinks.classList.remove('active');
+    hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+  }
+});
+
+/* ============================================================
+   REVEAL ON SCROLL
+   ============================================================ */
+const revealElements = document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window){
+  const revealObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('active');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.1, rootMargin:'0px 0px -50px 0px' });
+
+  revealElements.forEach(el=>revealObserver.observe(el));
+}else{
+  revealElements.forEach(el=>el.classList.add('active'));
+}
+</script>
+</body>
+  </html>
